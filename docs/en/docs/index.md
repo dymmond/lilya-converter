@@ -18,7 +18,7 @@
 </a>
 
 <a href="https://pypi.org/project/lilya-converter" target="_blank">
-    <img src="https://img.shields.io/pypi/pyversions/lilya-converter.svg?color=%2334D058" alt="Supported Python versions">
+    <img src="https://https://img.shields.io/pypi/pyversions/lilya-converter.svg?color=2334D058" alt="Supported Python versions">
 </a>
 </p>
 
