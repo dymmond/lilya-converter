@@ -10,15 +10,11 @@ theme:
     logo: lucide/sparkles
   palette:
     - scheme: default
-      primary: indigo
-      accent: teal
       media: '(prefers-color-scheme: light)'
       toggle:
         icon: lucide/sun
         name: Switch to dark mode
     - scheme: slate
-      primary: indigo
-      accent: teal
       media: '(prefers-color-scheme: dark)'
       toggle:
         icon: lucide/moon
@@ -43,8 +39,8 @@ extra_css:
 nav:
   - Home: index.md
   - Get Started: get-started.md
-  - Tutorial - First Conversion: tutorial-first-conversion.md
-  - How-To Guides:
+  - First Conversion: tutorial-first-conversion.md
+  - Guides:
       - Convert an Entire Project: how-to-convert-project.md
       - Convert a Single File: how-to-convert-single-file.md
       - Analyze and Reports: how-to-analyze-and-reports.md
@@ -52,8 +48,8 @@ nav:
   - Command Reference: commands.md
   - Conversion Rules: conversion-rules.md
   - Contributing: contributing.md
-  - Release Notes: release-notes.md
   - Sponsorship: sponsorship.md
+  - Release Notes: release-notes.md
 markdown_extensions:
   - toc:
       permalink: true

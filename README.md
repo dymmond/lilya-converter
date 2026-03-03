@@ -160,9 +160,3 @@ The build command uses [`mkdocs.yaml`](/Users/tarsil/Projects/github/dymmond/lil
 - If `verify` reports `verify.fastapi_import_remaining`, inspect files for unsupported patterns left intentionally unchanged.
 - If route metadata kwargs are removed (`convert.route.kwargs_removed`), check Lilya route decorator signatures and reapply behavior manually where needed.
 - If middleware decorators are removed (`convert.middleware.decorator_removed`), convert to class-based middleware patterns in Lilya.
-
-## Research Notes
-
-Grounding references used to build the converter are in:
-- [`findings/research-notes.md`](/Users/tarsil/Projects/github/dymmond/lilya_converter/findings/research-notes.md)
-- [`docs/research-notes.md`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs/research-notes.md)
