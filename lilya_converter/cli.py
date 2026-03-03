@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated, cast
+from typing import Annotated
 
 import click
 from sayer import Argument, Option, Sayer
@@ -79,7 +79,10 @@ def _print_diagnostics(prefix: str, diagnostics: list[Diagnostic]) -> None:
 )
 def analyze(
     source: Annotated[str, Argument(help="FastAPI project root to scan.")],
-    output: Annotated[str | None, Option(None, "--output", "-o", help="Optional JSON report path.")] = None,
+    output: Annotated[
+        str | None,
+        Option(None, "--output", "-o", type=str, help="Optional JSON report path."),
+    ],
     as_json: Annotated[
         bool,
         Option(False, "--json", help="Print full JSON report to stdout.", is_flag=True),
@@ -128,6 +131,10 @@ def analyze(
 def convert(
     source: Annotated[str, Argument(help="FastAPI project root.")],
     target: Annotated[str, Argument(help="Output Lilya project root.")],
+    report: Annotated[
+        str | None,
+        Option(None, "--report", type=str, help="Optional JSON report output path."),
+    ],
     dry_run: Annotated[
         bool,
         Option(False, "--dry-run", help="Compute changes without writing files.", is_flag=True),
@@ -136,18 +143,14 @@ def convert(
         bool,
         Option(False, "--diff", help="Print unified diffs for changed Python files.", is_flag=True),
     ] = False,
-    copy_assets: bool = cast(
+    copy_assets: Annotated[
         bool,
         Option(
             True,
             "--copy-non-python/--no-copy-non-python",
             help="Copy non-Python files to target.",
         ),
-    ),
-    report_path: Annotated[
-        str | None,
-        Option(None, "--report", help="Optional JSON report output path."),
-    ] = None,
+    ] = True,
 ) -> None:
     """Convert a FastAPI source tree into Lilya-compatible Python files.
 
@@ -157,31 +160,33 @@ def convert(
         dry_run: If `True`, compute and report changes without writing files.
         diff: If `True`, print unified diffs for changed Python files.
         copy_assets: If `True`, copy non-Python files into the target root.
-        report_path: Optional path where the conversion report JSON is written.
+        report: Optional path where the conversion report JSON is written.
     """
-    report = convert_project(
+    conversion_report = convert_project(
         source_root=source,
         target_root=target,
         dry_run=dry_run,
         copy_non_python=copy_assets,
     )
-    if report_path:
-        save_conversion_report(report, report_path)
-        success(f"Conversion report written to {report_path}")
+    if report:
+        save_conversion_report(conversion_report, report)
+        success(f"Conversion report written to {report}")
 
-    info(f"Source: {report.source_root}")
-    info(f"Target: {report.target_root}")
-    info(f"Dry-run: {report.dry_run}")
-    info(f"Files total: {report.files_total}")
-    info(f"Files changed: {report.files_changed}")
-    info(f"Files written: {report.files_written}")
-    info(f"Applied rules: {', '.join(report.applied_rules) if report.applied_rules else '(none)'}")
-    _print_diagnostics("", report.diagnostics)
-    if not any(item.severity == "error" for item in report.diagnostics):
+    info(f"Source: {conversion_report.source_root}")
+    info(f"Target: {conversion_report.target_root}")
+    info(f"Dry-run: {conversion_report.dry_run}")
+    info(f"Files total: {conversion_report.files_total}")
+    info(f"Files changed: {conversion_report.files_changed}")
+    info(f"Files written: {conversion_report.files_written}")
+    info(
+        f"Applied rules: {', '.join(conversion_report.applied_rules) if conversion_report.applied_rules else '(none)'}"
+    )
+    _print_diagnostics("", conversion_report.diagnostics)
+    if not any(item.severity == "error" for item in conversion_report.diagnostics):
         success("Conversion completed.")
 
     if diff:
-        for change in report.file_changes:
+        for change in conversion_report.file_changes:
             if change.changed and change.unified_diff:
                 echo(change.unified_diff.rstrip())
 
@@ -279,29 +284,29 @@ app.add_app("map", map_app)
 )
 def verify(
     target: Annotated[str, Argument(help="Converted Lilya project root.")],
-    report_path: Annotated[
+    report: Annotated[
         str | None,
-        Option(None, "--report", help="Optional JSON report output path."),
-    ] = None,
+        Option(None, "--report", type=str, help="Optional JSON report output path."),
+    ],
 ) -> None:
     """Verify structural correctness of a converted Lilya project.
 
     Args:
         target: Root directory of the converted Lilya project.
-        report_path: Optional path where the verify report JSON is written.
+        report: Optional path where the verify report JSON is written.
 
     Raises:
         click.ClickException: If verification detects at least one error-level
             diagnostic.
     """
-    report = verify_project(target_root=target)
-    if report_path:
-        save_verify_report(report, report_path)
-        success(f"Verify report written to {report_path}")
+    verify_report = verify_project(target_root=target)
+    if report:
+        save_verify_report(verify_report, report)
+        success(f"Verify report written to {report}")
 
-    info(f"Target: {report.target_root}")
-    info(f"Diagnostics: {len(report.diagnostics)}")
-    _print_diagnostics("", report.diagnostics)
-    if report.has_errors:
+    info(f"Target: {verify_report.target_root}")
+    info(f"Diagnostics: {len(verify_report.diagnostics)}")
+    _print_diagnostics("", verify_report.diagnostics)
+    if verify_report.has_errors:
         raise click.ClickException("Verification failed with syntax or structural errors.")
     success("Verification completed.")
