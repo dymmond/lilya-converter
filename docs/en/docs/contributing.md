@@ -97,9 +97,19 @@ $ hatch run lint
 
 ### Documentation
 
-Improving the documentation is quite easy and it is placed inside the `lilya_converter/docs` folder.
+Improving the documentation is straightforward:
 
-To start the docs, run:
+* author pages in `docs/en/docs`,
+* keep reusable snippet sources in `docs_src`,
+* run the docs pipeline to generate and preview the site.
+
+To prepare and build docs:
+
+```shell
+$ hatch run docs:build
+```
+
+To preview docs locally:
 
 ```shell
 $ hatch run docs:serve

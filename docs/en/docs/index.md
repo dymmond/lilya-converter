@@ -1,93 +1,73 @@
 # Lilya Converter
 
-`lilya_converter` is a deterministic FastAPI-to-Lilya conversion CLI built on top of Sayer.
+<p align="center">
+  <a href="https://lilya.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1707501404/lilya/logo_quiotd.png" alt='Lilya'></a>
+</p>
 
-It is designed for production migration workflows where you need:
-- explicit conversion rules,
-- actionable diagnostics,
-- dry-run + diff preview,
-- reproducible outputs and reports.
+<p align="center">
+    <em>Convert FastAPI codebases into Lilya using deterministic rules, explicit diagnostics, and reproducible reports.</em>
+</p>
 
-## Why It Exists
+<p align="center">
+<a href="https://github.com/dymmond/lilya-converter/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" target="_blank">
+    <img src="https://github.com/dymmond/lilya-converter/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" alt="Test Suite">
+</a>
 
-FastAPI and Lilya are both ASGI ecosystems, but they expose different routing, dependency, and metadata APIs.
+<a href="https://pypi.org/project/lilya-converter" target="_blank">
+    <img src="https://img.shields.io/pypi/v/lilya-converter?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
 
-`lilya_converter` bridges that gap by applying source-grounded AST transformations with explicit diagnostics when parity is partial or unsupported.
+<a href="https://pypi.org/project/lilya-converter" target="_blank">
+    <img src="https://img.shields.io/pypi/pyversions/lilya-converter.svg?color=%2334D058" alt="Supported Python versions">
+</a>
+</p>
 
-## What It Converts
+---
 
-- FastAPI app/router declarations and imports into Lilya equivalents.
-- `include_router(...)` call sites into `include(path=..., app=...)`.
-- Route dependency markers (`Depends(...)`) into Lilya `Provide`/`Provides` forms.
-- FastAPI exception handler decorators into Lilya registration calls.
-- Selected middleware/response import paths where direct Lilya equivalents exist.
+**Documentation**: [https://lilya-converter.dymmond.com](https://lilya-converter.dymmond.com) 📚
 
-## What Requires Manual Follow-up
+**Source Code**: [https://github.com/dymmond/lilya-converter](https://github.com/dymmond/lilya-converter) 💻
 
-- FastAPI function middleware decorators (`@app.middleware("http")`).
-- Decorator kwargs without direct Lilya route arguments (for example `response_model`).
-- Dynamic patterns that cannot be merged deterministically.
+**The official supported version is always the latest released**.
 
-## End-to-End Workflow
+---
 
-1. Analyze your source project:
-
-```bash
-lilya-converter analyze ./fastapi_project --output ./reports/scan.json
-```
-
-2. Preview conversion and inspect diffs:
+## Installation
 
 ```bash
-lilya-converter convert ./fastapi_project ./lilya_project --dry-run --diff --report ./reports/convert.json
+pip install lilya-converter
 ```
 
-3. Run real conversion:
+## Start Here
 
-```bash
-lilya-converter convert ./fastapi_project ./lilya_project --report ./reports/convert.json
-```
+1. [Get Started](get-started.md)
+2. [First Conversion](tutorial-first-conversion.md)
+3. [Guides](how-to-convert-project.md)
+4. [Command Reference](commands.md)
 
-4. Verify the result:
+## What You Get
 
-```bash
-lilya-converter verify ./lilya_project --report ./reports/verify.json
-```
+- Deterministic conversion outputs.
+- Rule-level diagnostics and reports.
+- Dry-run and unified diff previews.
+- Verification checks after conversion.
 
-## CLI Examples
+## Quick Command Preview
 
+```python
 {!> ../../../docs_src/cli/examples.py !}
+```
 
-## Conversion Example
+## Conversion Preview
 
-FastAPI input:
+### FastAPI input:
 
+```python
 {!> ../../../docs_src/conversion/fastapi_input.py !}
+```
 
-Lilya output:
+### Lilya output:
 
+```python
 {!> ../../../docs_src/conversion/lilya_output.py !}
-
-## Dependency Conversion Example
-
-FastAPI dependency style:
-
-{!> ../../../docs_src/conversion/dependencies_fastapi.py !}
-
-Lilya dependency style:
-
-{!> ../../../docs_src/conversion/dependencies_lilya.py !}
-
-## Determinism Guarantees
-
-- File traversal order is stable.
-- Applied rules are sorted in reports.
-- Diagnostics are sorted by file/line/code.
-- Generated dependency maps use stable key ordering.
-
-## Next Reads
-
-- [Commands](commands.md)
-- [Conversion Rules](conversion-rules.md)
-- [Architecture](architecture.md)
-- [Contributing](contributing.md)
+```

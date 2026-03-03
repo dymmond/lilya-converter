@@ -2,9 +2,6 @@
 
 Do you like **Lilya Converter** and would like to help Lilya Converter, other user and the author?
 
-## 🐦 Follow Lilya Converter on Twitter
-
-
 ## ⭐ Star **Lilya Converter** on GitHub
 
 Giving a star to Lilya Converter is very simple and helps promoting the work across the developers around the world.
@@ -21,8 +18,6 @@ Following the GitHub repo will allow you to "watch" for any new release of Lilya
 
 You can click on "***watch***" and select "***custom***" -> "***Releases***"or any other you may find particular
 interesting to you.
-
-## 💬 Join the official Lilya Converter discord channel
 
 ## 🔥 Sponsor the author
 

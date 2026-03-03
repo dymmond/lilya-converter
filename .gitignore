@@ -17,6 +17,8 @@ results/
 site/
 site_lang/
 target/
+.cache/
+docs/generated/
 
 
 # files

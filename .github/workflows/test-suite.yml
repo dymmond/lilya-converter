@@ -5,12 +5,8 @@ on:
   push:
     branches:
       - "main"
-    paths-ignore:
-      - "docs/**"
   pull_request:
     branches: ["main"]
-    paths-ignore:
-      - "docs/**"
   schedule:
     - cron: "0 0 * * *"
 
@@ -41,4 +37,26 @@ jobs:
       - name: "Run typing checks"
         run: "hatch run test:check_types"
       - name: "Run tests"
-        run: "hatch run test:test"
+        run: "hatch run test:test -m 'not docs'"
+
+  docs:
+    name: "Docs"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: "actions/checkout@v4"
+      - uses: "actions/setup-python@v5"
+        with:
+          python-version: "3.11"
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-docs-v01
+      - name: "Install dependencies"
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: "pip install hatch"
+      - name: "Build docs"
+        run: "hatch run docs:build"
+      - name: "Run docs tests"
+        run: "hatch run test:test tests/docs -m docs -q"

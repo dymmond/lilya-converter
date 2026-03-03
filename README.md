@@ -1,4 +1,36 @@
-# lilya_converter
+# Lilya Converter
+
+<p align="center">
+  <a href="https://lilya.dev"><img src="https://res.cloudinary.com/dymmond/image/upload/v1707501404/lilya/logo_quiotd.png" alt='Lilya'></a>
+</p>
+
+<p align="center">
+    <em>Convert FastAPI codebases into Lilya using deterministic rules, explicit diagnostics, and reproducible reports.</em>
+</p>
+
+<p align="center">
+<a href="https://github.com/dymmond/lilya-converter/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" target="_blank">
+    <img src="https://github.com/dymmond/lilya-converter/actions/workflows/test-suite.yml/badge.svg?event=push&branch=main" alt="Test Suite">
+</a>
+
+<a href="https://pypi.org/project/lilya-converter" target="_blank">
+    <img src="https://img.shields.io/pypi/v/lilya-converter?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+
+<a href="https://pypi.org/project/lilya-converter" target="_blank">
+    <img src="https://img.shields.io/pypi/pyversions/lilya-converter.svg?color=%2334D058" alt="Supported Python versions">
+</a>
+</p>
+
+---
+
+**Documentation**: [https://lilya-converter.dymmond.com](https://lilya-converter.dymmond.com) 📚
+
+**Source Code**: [https://github.com/dymmond/lilya-converter](https://github.com/dymmond/lilya-converter) 💻
+
+**The official supported version is always the latest released**.
+
+---
 
 `lilya_converter` is a modular CLI that converts FastAPI projects into Lilya projects using AST-based, repo-grounded rules.
 
@@ -30,6 +62,12 @@ The converter is implemented with [Sayer](https://github.com/dymmond/sayer) comm
 - Dynamic prefix/path merges that cannot be resolved deterministically are reported.
 
 ## Installation
+
+```bash
+pip install lilya-converter
+```
+
+For local development from source:
 
 ```bash
 pip install -e .
@@ -117,14 +155,40 @@ Current suite includes:
 - unsupported feature diagnostics checks,
 - deterministic ordering checks.
 
+## Building docs locally
+
+The docs pipeline uses Zensical and a deterministic prebuild step:
+
+```bash
+hatch run docs:build
+```
+
+Useful docs commands:
+
+```bash
+hatch run docs:prepare  # expand include directives into build-ready markdown
+hatch run docs:serve    # prepare + serve with live source watching on 127.0.0.1:8000
+hatch run docs:clean    # remove generated docs/site/cache artifacts
+```
+
+The build command uses [`mkdocs.yaml`](/Users/tarsil/Projects/github/dymmond/lilya_converter/mkdocs.yaml) through Zensical compatibility and writes output to `site/`.
+
+## Docs architecture
+
+- Authoring sources live in [`docs/en/docs`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs/en/docs).
+- Code/doc snippets are stored in [`docs_src`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs_src).
+- Prebuild generation expands `{!> ... !}` include directives into concrete markdown under `docs/generated` using [`scripts/docs.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/scripts/docs.py) and [`scripts/docs_pipeline.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/scripts/docs_pipeline.py).
+- Zensical renders the generated docs tree to static HTML in `site/`.
+- Intentionally dropped MkDocs behaviors:
+  - MkDocs hook callbacks (`scripts/hooks.py`) are removed.
+  - `mkdocs-meta-descriptions-plugin` is removed from the active pipeline.
+- Docs regression coverage is in [`tests/docs/test_docs_pipeline.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/tests/docs/test_docs_pipeline.py), including:
+  - deterministic generated-markdown checks against fixture goldens,
+  - docs build smoke assertions for key output artifacts,
+  - checks that the active docs pipeline contains no MkDocs dependency/config.
+
 ## Troubleshooting
 
 - If `verify` reports `verify.fastapi_import_remaining`, inspect files for unsupported patterns left intentionally unchanged.
 - If route metadata kwargs are removed (`convert.route.kwargs_removed`), check Lilya route decorator signatures and reapply behavior manually where needed.
 - If middleware decorators are removed (`convert.middleware.decorator_removed`), convert to class-based middleware patterns in Lilya.
-
-## Research Notes
-
-Grounding references used to build the converter are in:
-- [`findings/research-notes.md`](/Users/tarsil/Projects/github/dymmond/lilya_converter/findings/research-notes.md)
-- [`docs/research-notes.md`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs/research-notes.md)
