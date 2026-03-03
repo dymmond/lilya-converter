@@ -1,3 +1,130 @@
 # lilya_converter
 
-Convert your existing projects into a Lilya application with ease
+`lilya_converter` is a modular CLI that converts FastAPI projects into Lilya projects using AST-based, repo-grounded rules.
+
+The converter is implemented with [Sayer](https://github.com/dymmond/sayer) commands and is built around:
+- a project scanner,
+- a deterministic transformation engine,
+- safe file writing with dry-run and diff preview,
+- structured conversion/verification reports.
+
+## Scope
+
+### What it does
+- Scans FastAPI source trees (`analyze`) and reports detected apps, routers, routes, dependencies, middleware/event/exception patterns.
+- Converts Python files with deterministic rule application (`convert`):
+  - `FastAPI`/`APIRouter` imports mapped to Lilya imports.
+  - `include_router(...)` converted to `include(path=..., app=...)`.
+  - FastAPI `Depends(...)` route patterns converted to Lilya `Provide`/`Provides` dependency style.
+  - `@app.exception_handler(...)` converted into `app.add_exception_handler(...)` registration calls.
+  - FastAPI middleware import modules mapped to Lilya middleware modules where direct equivalents exist.
+  - FastAPI `api_route`/`trace` decorators normalized to Lilya `route(..., methods=[...])`.
+- Generates a Lilya scaffold entrypoint (`scaffold`).
+- Shows mapping rules and applied mappings (`map rules`, `map applied`).
+- Runs post-conversion structural checks (`verify`).
+
+### What it does not do
+- It does not fabricate unsupported runtime behavior.
+- FastAPI function middleware (`@app.middleware("http")`) is reported for manual conversion.
+- FastAPI `response_model` runtime filtering semantics are not auto-recreated in Lilya routes; unsupported decorator kwargs are removed and reported.
+- Dynamic prefix/path merges that cannot be resolved deterministically are reported.
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+CLI entrypoint:
+
+```bash
+lilya-converter --help
+```
+
+## Commands
+
+### Analyze
+
+```bash
+lilya-converter analyze ./my-fastapi-app
+lilya-converter analyze ./my-fastapi-app --json
+lilya-converter analyze ./my-fastapi-app --output ./reports/scan.json
+```
+
+### Convert
+
+```bash
+lilya-converter convert ./my-fastapi-app ./my-lilya-app
+lilya-converter convert ./my-fastapi-app ./my-lilya-app --dry-run --diff
+lilya-converter convert ./my-fastapi-app ./my-lilya-app --report ./reports/convert.json
+```
+
+### Scaffold
+
+```bash
+lilya-converter scaffold ./my-fastapi-app ./my-lilya-scaffold
+lilya-converter scaffold ./my-fastapi-app ./my-lilya-scaffold --dry-run
+```
+
+### Map
+
+```bash
+lilya-converter map rules
+lilya-converter map applied ./reports/convert.json
+```
+
+### Verify
+
+```bash
+lilya-converter verify ./my-lilya-app
+lilya-converter verify ./my-lilya-app --report ./reports/verify.json
+```
+
+## How Conversion Works
+
+1. Scanner (`lilya_converter/scanner.py`) parses `.py` files with `ast` and collects conversion-relevant patterns.
+2. Transformer (`lilya_converter/transformer.py`) applies rule-driven AST rewrites per file.
+3. Engine (`lilya_converter/engine.py`) orchestrates conversion, report assembly, dry-run behavior, and writing.
+4. Writer (`lilya_converter/writer.py`) handles deterministic file traversal and safe writes.
+
+All outputs are deterministic:
+- sorted file traversal,
+- sorted rule/report entries,
+- stable dependency map key ordering.
+
+## Add a New Conversion Rule
+
+1. Add transformation logic in [`lilya_converter/transformer.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/lilya_converter/transformer.py).
+2. Register the rule id/summary in [`lilya_converter/rules.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/lilya_converter/rules.py).
+3. Add unit tests for the transformation in [`tests/unit/test_transformer.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/tests/unit/test_transformer.py).
+4. If behavior changes output, update golden fixtures in [`tests/fixtures/golden`](/Users/tarsil/Projects/github/dymmond/lilya_converter/tests/fixtures/golden).
+5. Add or update integration assertions in [`tests/integration/test_golden_conversion.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/tests/integration/test_golden_conversion.py).
+
+## Testing
+
+Run full tests:
+
+```bash
+hatch run test:test -q
+```
+
+Current suite includes:
+- rule/helper unit tests,
+- scanner/engine tests,
+- CLI integration tests,
+- golden output tests,
+- dry-run no-write checks,
+- unsupported feature diagnostics checks,
+- deterministic ordering checks.
+
+## Troubleshooting
+
+- If `verify` reports `verify.fastapi_import_remaining`, inspect files for unsupported patterns left intentionally unchanged.
+- If route metadata kwargs are removed (`convert.route.kwargs_removed`), check Lilya route decorator signatures and reapply behavior manually where needed.
+- If middleware decorators are removed (`convert.middleware.decorator_removed`), convert to class-based middleware patterns in Lilya.
+
+## Research Notes
+
+Grounding references used to build the converter are in:
+- [`findings/research-notes.md`](/Users/tarsil/Projects/github/dymmond/lilya_converter/findings/research-notes.md)
+- [`docs/research-notes.md`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs/research-notes.md)
