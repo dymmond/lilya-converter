@@ -66,21 +66,29 @@ Converter behavior:
 
 FastAPI:
 
+```python
 {!> ../../../docs_src/conversion/dependencies_fastapi.py !}
+```
 
 Lilya:
 
+```python
 {!> ../../../docs_src/conversion/dependencies_lilya.py !}
+```
 
 ## Worked Complex Example
 
 FastAPI:
 
+```python
 {!> ../../../docs_src/conversion/complex_fastapi.py !}
+```
 
 Lilya:
 
+```python
 {!> ../../../docs_src/conversion/complex_lilya.py !}
+```
 
 ## Operational Guidance
 

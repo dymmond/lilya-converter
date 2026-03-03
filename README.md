@@ -32,6 +32,12 @@ The converter is implemented with [Sayer](https://github.com/dymmond/sayer) comm
 ## Installation
 
 ```bash
+pip install lilya-converter
+```
+
+For local development from source:
+
+```bash
 pip install -e .
 ```
 
@@ -116,6 +122,38 @@ Current suite includes:
 - dry-run no-write checks,
 - unsupported feature diagnostics checks,
 - deterministic ordering checks.
+
+## Building docs locally
+
+The docs pipeline uses Zensical and a deterministic prebuild step:
+
+```bash
+hatch run docs:build
+```
+
+Useful docs commands:
+
+```bash
+hatch run docs:prepare  # expand include directives into build-ready markdown
+hatch run docs:serve    # prepare + serve with live source watching on 127.0.0.1:8000
+hatch run docs:clean    # remove generated docs/site/cache artifacts
+```
+
+The build command uses [`mkdocs.yaml`](/Users/tarsil/Projects/github/dymmond/lilya_converter/mkdocs.yaml) through Zensical compatibility and writes output to `site/`.
+
+## Docs architecture
+
+- Authoring sources live in [`docs/en/docs`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs/en/docs).
+- Code/doc snippets are stored in [`docs_src`](/Users/tarsil/Projects/github/dymmond/lilya_converter/docs_src).
+- Prebuild generation expands `{!> ... !}` include directives into concrete markdown under `docs/generated` using [`scripts/docs.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/scripts/docs.py) and [`scripts/docs_pipeline.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/scripts/docs_pipeline.py).
+- Zensical renders the generated docs tree to static HTML in `site/`.
+- Intentionally dropped MkDocs behaviors:
+  - MkDocs hook callbacks (`scripts/hooks.py`) are removed.
+  - `mkdocs-meta-descriptions-plugin` is removed from the active pipeline.
+- Docs regression coverage is in [`tests/docs/test_docs_pipeline.py`](/Users/tarsil/Projects/github/dymmond/lilya_converter/tests/docs/test_docs_pipeline.py), including:
+  - deterministic generated-markdown checks against fixture goldens,
+  - docs build smoke assertions for key output artifacts,
+  - checks that the active docs pipeline contains no MkDocs dependency/config.
 
 ## Troubleshooting
 

@@ -1,93 +1,43 @@
 # Lilya Converter
 
-`lilya_converter` is a deterministic FastAPI-to-Lilya conversion CLI built on top of Sayer.
+Convert FastAPI codebases into Lilya using deterministic rules, explicit diagnostics, and reproducible reports.
 
-It is designed for production migration workflows where you need:
-- explicit conversion rules,
-- actionable diagnostics,
-- dry-run + diff preview,
-- reproducible outputs and reports.
-
-## Why It Exists
-
-FastAPI and Lilya are both ASGI ecosystems, but they expose different routing, dependency, and metadata APIs.
-
-`lilya_converter` bridges that gap by applying source-grounded AST transformations with explicit diagnostics when parity is partial or unsupported.
-
-## What It Converts
-
-- FastAPI app/router declarations and imports into Lilya equivalents.
-- `include_router(...)` call sites into `include(path=..., app=...)`.
-- Route dependency markers (`Depends(...)`) into Lilya `Provide`/`Provides` forms.
-- FastAPI exception handler decorators into Lilya registration calls.
-- Selected middleware/response import paths where direct Lilya equivalents exist.
-
-## What Requires Manual Follow-up
-
-- FastAPI function middleware decorators (`@app.middleware("http")`).
-- Decorator kwargs without direct Lilya route arguments (for example `response_model`).
-- Dynamic patterns that cannot be merged deterministically.
-
-## End-to-End Workflow
-
-1. Analyze your source project:
+## Install
 
 ```bash
-lilya-converter analyze ./fastapi_project --output ./reports/scan.json
+pip install lilya-converter
 ```
 
-2. Preview conversion and inspect diffs:
+## Start Here
 
-```bash
-lilya-converter convert ./fastapi_project ./lilya_project --dry-run --diff --report ./reports/convert.json
-```
+1. [Get Started](get-started.md)
+2. [Tutorial - First Conversion](tutorial-first-conversion.md)
+3. [How-To Guides](how-to-convert-project.md)
+4. [Command Reference](commands.md)
 
-3. Run real conversion:
+## What You Get
 
-```bash
-lilya-converter convert ./fastapi_project ./lilya_project --report ./reports/convert.json
-```
+- Deterministic conversion outputs.
+- Rule-level diagnostics and reports.
+- Dry-run and unified diff previews.
+- Verification checks after conversion.
 
-4. Verify the result:
+## Quick Command Preview
 
-```bash
-lilya-converter verify ./lilya_project --report ./reports/verify.json
-```
-
-## CLI Examples
-
+```python
 {!> ../../../docs_src/cli/examples.py !}
+```
 
-## Conversion Example
+## Conversion Preview
 
-FastAPI input:
+### FastAPI input:
 
+```python
 {!> ../../../docs_src/conversion/fastapi_input.py !}
+```
 
-Lilya output:
+### Lilya output:
 
+```python
 {!> ../../../docs_src/conversion/lilya_output.py !}
-
-## Dependency Conversion Example
-
-FastAPI dependency style:
-
-{!> ../../../docs_src/conversion/dependencies_fastapi.py !}
-
-Lilya dependency style:
-
-{!> ../../../docs_src/conversion/dependencies_lilya.py !}
-
-## Determinism Guarantees
-
-- File traversal order is stable.
-- Applied rules are sorted in reports.
-- Diagnostics are sorted by file/line/code.
-- Generated dependency maps use stable key ordering.
-
-## Next Reads
-
-- [Commands](commands.md)
-- [Conversion Rules](conversion-rules.md)
-- [Architecture](architecture.md)
-- [Contributing](contributing.md)
+```

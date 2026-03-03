@@ -1,0 +1,60 @@
+# PLAN
+
+- [x] Recon three source repos (`sayer`, `fastapi`, `lilya`) and record grounded findings.
+- [x] Write `findings/research-notes.md` with citations to concrete source files.
+- [x] Create CLI entrypoint with Sayer and top-level commands: `analyze`, `convert`, `scaffold`, `map`, `verify`.
+- [x] Implement project scanner (FastAPI-focused) to discover Python files, app/router symbols, and route/dependency/middleware/event patterns.
+- [x] Implement normalized domain models (`scan report`, `conversion report`, `planned changes`) with deterministic ordering.
+- [ ] Implement AST parser utilities for:
+  - [ ] import graph collection and alias resolution (blocked: not fully implemented across modules; current pass handles direct symbols and explicit diagnostics for unresolved/unsupported patterns)
+  - [x] FastAPI app and router instantiation discovery
+  - [x] decorator route extraction (`app/router.get/post/...`)
+  - [x] include-router extraction
+  - [x] dependency extraction (`Depends` in signatures and decorator lists)
+  - [x] middleware/event/exception handler extraction
+- [x] Implement rule engine architecture:
+  - [x] rule registry and deterministic execution order
+  - [x] per-rule applicability checks
+  - [x] per-rule diagnostics (applied/skipped/blocked)
+- [x] Implement conversion rules (repo-grounded only):
+  - [x] app instantiation (`FastAPI` -> `Lilya` import mapping)
+  - [x] route decorator conversion
+  - [x] APIRouter/include_router conversion to `Router` + `Include`
+  - [x] dependency conversion to `Provide`/`Provides`
+  - [x] query/header/cookie param conversion where possible (import-level compatibility mapping)
+  - [x] lifespan/startup/shutdown conversion (preserved through Lilya-compatible signatures/decorators)
+  - [x] exception handler conversion
+  - [x] middleware conversion for `add_middleware(...)` where class-based mapping is direct
+  - [x] unsupported feature capture for function middleware and any non-grounded patterns
+- [x] Implement scaffold generator for Lilya project output structure based on discovered FastAPI layout.
+- [x] Implement renderer/writer:
+  - [x] write plan and report files
+  - [x] safe write mode
+  - [x] `--dry-run` support (no writes)
+  - [x] diff preview mode (local unified diff)
+- [x] Implement map commands:
+  - [x] list supported mapping rules
+  - [x] show applied mapping rules for a scan/convert run
+- [x] Implement verify command:
+  - [x] structural checks on generated Lilya files
+  - [x] unresolved imports and unsupported-feature summary
+- [x] Add fixture projects for integration/golden tests:
+  - [x] minimal app
+  - [x] dependencies
+  - [x] routers
+  - [x] middleware
+  - [x] lifespan/events
+  - [x] response model/status/response class metadata
+- [x] Add comprehensive tests:
+  - [x] unit tests for scanner/parser/rules/renderer/helpers
+  - [x] integration tests for end-to-end commands
+  - [x] golden output tests (exact file match)
+  - [x] deterministic ordering tests
+  - [x] dry-run no-write tests
+  - [x] unsupported-feature diagnostics tests
+- [x] Documentation:
+  - [x] update `README.md` (scope, commands, limits, rule authoring, troubleshooting)
+  - [x] add developer architecture doc at `docs/en/docs/architecture.md`
+  - [x] add docs page(s) with examples using `{!> ../../../docs_src/... !}` syntax and corresponding files in `docs_src/`
+- [x] Run test suite and static checks; fix failures.
+- [x] Update `PLAN.md` checkboxes as tasks complete and keep `findings/PLAN.md` in sync.
