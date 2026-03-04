@@ -87,6 +87,16 @@ lilya-converter convert ./my-starlette-app ./my-lilya-app --source starlette
 lilya-converter verify ./my-lilya-app --source django --report ./reports/verify.json
 ```
 
+Full source-key matrix:
+
+```bash
+lilya-converter convert ./my-fastapi-app ./my-lilya-app
+lilya-converter convert ./my-flask-app ./my-lilya-app --source flask
+lilya-converter convert ./my-django-app ./my-lilya-app --source django
+lilya-converter convert ./my-litestar-app ./my-lilya-app --source litestar
+lilya-converter convert ./my-starlette-app ./my-lilya-app --source starlette
+```
+
 ## Commands
 
 ```bash

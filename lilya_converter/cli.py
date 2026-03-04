@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 
 import click
 from sayer import Argument, Option, Sayer
@@ -88,7 +88,7 @@ def analyze(
         Option("fastapi", "--source", type=SOURCE_CHOICE, help=SOURCE_HELP),
     ] = "fastapi",
     output: Annotated[
-        str | None,
+        Optional[str],
         Option(None, "--output", "-o", type=str, help="Optional JSON report path."),
     ] = None,
     as_json: Annotated[
@@ -145,7 +145,7 @@ def convert(
         Option("fastapi", "--source", type=SOURCE_CHOICE, help=SOURCE_HELP),
     ] = "fastapi",
     report: Annotated[
-        str | None,
+        Optional[str],
         Option(None, "--report", type=str, help="Optional JSON report output path."),
     ] = None,
     dry_run: Annotated[
@@ -334,7 +334,7 @@ def verify(
         Option("fastapi", "--source", type=SOURCE_CHOICE, help=SOURCE_HELP),
     ] = "fastapi",
     report: Annotated[
-        str | None,
+        Optional[str],
         Option(None, "--report", type=str, help="Optional JSON report output path."),
     ] = None,
 ) -> None:

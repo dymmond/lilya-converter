@@ -96,3 +96,39 @@ pip install lilya-converter
 ```python
 {!> ../../../docs_src/conversion/flask_output.py !}
 ```
+
+### Django URLConf input
+
+```python
+{!> ../../../docs_src/conversion/django_input_urls.py !}
+```
+
+### Django Lilya output
+
+```python
+{!> ../../../docs_src/conversion/django_output_urls.py !}
+```
+
+### Litestar input
+
+```python
+{!> ../../../docs_src/conversion/litestar_input.py !}
+```
+
+### Litestar Lilya output
+
+```python
+{!> ../../../docs_src/conversion/litestar_output.py !}
+```
+
+### Starlette input
+
+```python
+{!> ../../../docs_src/conversion/starlette_input.py !}
+```
+
+### Starlette Lilya output
+
+```python
+{!> ../../../docs_src/conversion/starlette_output.py !}
+```
