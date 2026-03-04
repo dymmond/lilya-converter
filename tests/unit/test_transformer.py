@@ -59,6 +59,23 @@ app.include_router(router, prefix="/v1", tags=["ignored"])
     assert any(item.code == "convert.include_router.kwargs_removed" for item in result.diagnostics)
 
 
+def test_include_router_without_prefix_uses_root_path() -> None:
+    source = (
+        """
+from fastapi import APIRouter, FastAPI
+
+app = FastAPI()
+router = APIRouter()
+app.include_router(router)
+""".strip()
+        + "\n"
+    )
+
+    result = _transform(source)
+
+    assert "app.include(path='/', app=router)" in result.content
+
+
 def test_router_prefix_is_merged_into_route_paths() -> None:
     source = (
         """

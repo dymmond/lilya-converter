@@ -1,0 +1,9 @@
+$ lilya-converter analyze ./flask_project --source flask
+Source framework: flask
+Source root: /workspace/flask_project
+Files scanned: 3
+Routes detected: 4
+Diagnostics: 0
+- app/main.py: apps=2 routes=2 includes=1
+- app/admin.py: apps=1 routes=1 includes=0
+- app/api.py: apps=1 routes=1 includes=0

@@ -1,0 +1,27 @@
+{
+  "source_root": "/workspace/flask_project",
+  "target_root": "/workspace/lilya_project",
+  "dry_run": false,
+  "files_total": 3,
+  "files_changed": 2,
+  "files_written": 3,
+  "applied_rules": [
+    "blueprint_prefix_extracted",
+    "blueprint_prefix_to_route_path",
+    "flask_imports_to_lilya",
+    "flask_constructor_sanitized",
+    "flask_route_default_methods",
+    "flask_route_endpoint_to_name",
+    "flask_route_kwargs_filtered",
+    "register_blueprint_to_include"
+  ],
+  "diagnostics": [
+    {
+      "code": "convert.flask.route_kwargs_removed",
+      "message": "Removed unsupported Flask route kwargs on 'list_items': strict_slashes",
+      "severity": "warning",
+      "file": "app/main.py",
+      "line": 7
+    }
+  ]
+}

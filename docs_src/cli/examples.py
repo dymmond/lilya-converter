@@ -1,13 +1,14 @@
 # Analyze
 # lilya-converter analyze ./fastapi_project --json
+# lilya-converter analyze ./django_project --source django --output ./reports/scan.json
 
 # Convert with preview
-# lilya-converter convert ./fastapi_project ./lilya_project --dry-run --diff
+# lilya-converter convert ./litestar_project ./lilya_project --source litestar --dry-run --diff
 
 # Persist reports
-# lilya-converter convert ./fastapi_project ./lilya_project --report ./reports/convert.json
-# lilya-converter verify ./lilya_project --report ./reports/verify.json
+# lilya-converter convert ./starlette_project ./lilya_project --source starlette --report ./reports/convert.json
+# lilya-converter verify ./lilya_project --source django --report ./reports/verify.json
 
 # Mapping introspection
-# lilya-converter map rules
+# lilya-converter map rules --source flask
 # lilya-converter map applied ./reports/convert.json

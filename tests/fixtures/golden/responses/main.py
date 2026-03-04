@@ -15,4 +15,4 @@ async def trace_route():
 @router.websocket('/ws')
 async def ws(sock):
     await sock.accept()
-app.include(path='', app=router)
+app.include(path='/', app=router)

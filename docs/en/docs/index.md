@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <em>Convert FastAPI codebases into Lilya using deterministic rules, explicit diagnostics, and reproducible reports.</em>
+    <em>Convert web framework codebases into Lilya with deterministic rules, explicit diagnostics, and reproducible reports.</em>
 </p>
 
 <p align="center">
@@ -43,11 +43,24 @@ pip install lilya-converter
 1. [Get Started](get-started.md)
 2. [First Conversion](tutorial-first-conversion.md)
 3. [Guides](how-to-convert-project.md)
-4. [Command Reference](commands.md)
+4. [Examples and Outputs](examples-and-outputs.md)
+5. [Command Reference](commands.md)
+6. [Adding a New Adapter](adding-adapter.md)
+
+## Framework Support Matrix
+
+| Source | Key | Status | Notes |
+| --- | --- | --- | --- |
+| FastAPI | `fastapi` | Stable | Default source and backwards-compatible CLI behavior |
+| Flask | `flask` | Stable | Blueprint and route conversion |
+| Django | `django` | Stable | URLConf conversion and management-command path remapping |
+| Litestar | `litestar` | Stable | Decorator and route_handlers conversion |
+| Starlette | `starlette` | Stable | Route/Mount conversion |
 
 ## What You Get
 
-- Deterministic conversion outputs.
+- Multi-framework adapter architecture.
+- Deterministic conversion output.
 - Rule-level diagnostics and reports.
 - Dry-run and unified diff previews.
 - Verification checks after conversion.
@@ -60,14 +73,62 @@ pip install lilya-converter
 
 ## Conversion Preview
 
-### FastAPI input:
+### FastAPI input
 
 ```python
 {!> ../../../docs_src/conversion/fastapi_input.py !}
 ```
 
-### Lilya output:
+### Lilya output
 
 ```python
 {!> ../../../docs_src/conversion/lilya_output.py !}
+```
+
+### Flask input
+
+```python
+{!> ../../../docs_src/conversion/flask_input.py !}
+```
+
+### Flask Lilya output
+
+```python
+{!> ../../../docs_src/conversion/flask_output.py !}
+```
+
+### Django URLConf input
+
+```python
+{!> ../../../docs_src/conversion/django_input_urls.py !}
+```
+
+### Django Lilya output
+
+```python
+{!> ../../../docs_src/conversion/django_output_urls.py !}
+```
+
+### Litestar input
+
+```python
+{!> ../../../docs_src/conversion/litestar_input.py !}
+```
+
+### Litestar Lilya output
+
+```python
+{!> ../../../docs_src/conversion/litestar_output.py !}
+```
+
+### Starlette input
+
+```python
+{!> ../../../docs_src/conversion/starlette_input.py !}
+```
+
+### Starlette Lilya output
+
+```python
+{!> ../../../docs_src/conversion/starlette_output.py !}
 ```
