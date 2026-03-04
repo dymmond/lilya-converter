@@ -1,65 +1,32 @@
 # Release Notes
 
-## 0.3.0
-
-`lilya-converter` now adds source adapters for Django, Litestar, and Starlette.
-
-### What's Included
-
-- New Django adapter (`--source django`):
-  - URLConf `path()/re_path()/include()` conversion to Lilya `Path`/`Include`.
-  - `urlpatterns` app materialization (`app = Lilya(routes=urlpatterns)`).
-  - Framework-aware path remapping:
-    - `management/commands/*` -> `directives/operations/*`.
-- New Litestar adapter (`--source litestar`):
-  - Module-level decorator conversion to explicit Lilya `Path` routes.
-  - `route_handlers` normalization to Lilya `routes`.
-  - `Router(path=...)` conversion to `Include(path=..., app=router)` in app routes.
-- New Starlette adapter (`--source starlette`):
-  - `Route` -> `Path`, `Mount` -> `Include`, `WebSocketRoute` -> `WebSocketPath`.
-  - `mount()` and `add_route(route=...)` call normalization.
-- Expanded test suite with adapter-specific unit and integration fixtures for:
-  - Django,
-  - Litestar,
-  - Starlette.
-- Documentation refresh with support matrix and multi-framework examples.
-
-### Compatibility
-
-- FastAPI remains the default source when `--source` is omitted.
-- Existing FastAPI and Flask behavior remains available.
-
 ## 0.2.0
 
-`lilya-converter` now supports a multi-framework adapter architecture.
+### Added
 
-### What's Included
+- Framework-agnostic orchestration layer in `lilya_converter/core`.
+- Explicit deterministic adapter registry for `fastapi`, `flask`, `django`, `litestar`, and `starlette`.
+- New Flask adapter (`--source flask`).
+- New Django adapter (`--source django`) with URLConf conversion and app materialization from `urlpatterns`.
+- New Litestar adapter (`--source litestar`) with decorator and `route_handlers` conversion.
+- New Starlette adapter (`--source starlette`) with `Route`, `Mount`, and `WebSocketRoute` conversion.
+- Django-specific target path mapping from `management/commands/*` to `directives/operations/*`.
+- Typed conversion plan/result models for analyze, convert, scaffold, and verify flows.
+- Unified typed exceptions for registry and orchestration errors.
+- Expanded tests for Flask, Django, Litestar, and Starlette adapters.
+- Updated documentation with multi-framework support matrix and conversion examples.
 
-- Framework-agnostic core orchestration (`core` package).
-- Explicit deterministic adapter registry (`fastapi`, `flask`).
-- New Flask-to-Lilya adapter (`--source flask`).
-- FastAPI conversion moved into a dedicated adapter with compatibility shims.
-- Unified typed exception model for adapter/registry/path errors.
-- Typed conversion plan/result objects in orchestration.
-- CLI source selection support with stable help output for supported sources.
-- New Flask tests:
-  - registry selection,
-  - CLI parsing,
-  - end-to-end fixture-to-golden conversion.
+### Changed
 
-### Compatibility
+- FastAPI conversion implementation moved into a dedicated adapter package.
+- CLI commands now route through adapter selection with `--source`.
+- Default CLI behavior remains FastAPI when `--source` is omitted.
+- Conversion output path handling now supports adapter-level remapping hooks.
 
-- Existing FastAPI CLI behavior remains backwards compatible.
-- Omitting `--source` still defaults to `fastapi`.
+### Fixed
 
-### Quick Start
-
-```bash
-lilya-converter analyze ./my-fastapi-app
-lilya-converter convert ./my-fastapi-app ./my-lilya-app
-lilya-converter convert ./my-flask-app ./my-lilya-app --source flask
-lilya-converter verify ./my-lilya-app --source flask
-```
+- Ensured normalized route/include paths stay non-empty and Lilya-compatible.
+- Improved Python 3.10 compatibility for CLI optional argument annotations.
 
 ## 0.1.0
 
