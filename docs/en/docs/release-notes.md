@@ -1,5 +1,34 @@
 # Release Notes
 
+## 0.3.0
+
+`lilya-converter` now adds source adapters for Django, Litestar, and Starlette.
+
+### What's Included
+
+- New Django adapter (`--source django`):
+  - URLConf `path()/re_path()/include()` conversion to Lilya `Path`/`Include`.
+  - `urlpatterns` app materialization (`app = Lilya(routes=urlpatterns)`).
+  - Framework-aware path remapping:
+    - `management/commands/*` -> `directives/operations/*`.
+- New Litestar adapter (`--source litestar`):
+  - Module-level decorator conversion to explicit Lilya `Path` routes.
+  - `route_handlers` normalization to Lilya `routes`.
+  - `Router(path=...)` conversion to `Include(path=..., app=router)` in app routes.
+- New Starlette adapter (`--source starlette`):
+  - `Route` -> `Path`, `Mount` -> `Include`, `WebSocketRoute` -> `WebSocketPath`.
+  - `mount()` and `add_route(route=...)` call normalization.
+- Expanded test suite with adapter-specific unit and integration fixtures for:
+  - Django,
+  - Litestar,
+  - Starlette.
+- Documentation refresh with support matrix and multi-framework examples.
+
+### Compatibility
+
+- FastAPI remains the default source when `--source` is omitted.
+- Existing FastAPI and Flask behavior remains available.
+
 ## 0.2.0
 
 `lilya-converter` now supports a multi-framework adapter architecture.

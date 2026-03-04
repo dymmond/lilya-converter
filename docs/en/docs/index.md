@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <em>Convert FastAPI and Flask codebases into Lilya with deterministic rules, explicit diagnostics, and reproducible reports.</em>
+    <em>Convert web framework codebases into Lilya with deterministic rules, explicit diagnostics, and reproducible reports.</em>
 </p>
 
 <p align="center">
@@ -47,15 +47,20 @@ pip install lilya-converter
 5. [Command Reference](commands.md)
 6. [Adding a New Adapter](adding-adapter.md)
 
-## Framework Support
+## Framework Support Matrix
 
-- `fastapi` (default source; backwards-compatible CLI behavior)
-- `flask` (`--source flask`)
+| Source | Key | Status | Notes |
+| --- | --- | --- | --- |
+| FastAPI | `fastapi` | Stable | Default source and backwards-compatible CLI behavior |
+| Flask | `flask` | Stable | Blueprint and route conversion |
+| Django | `django` | Stable | URLConf conversion and management-command path remapping |
+| Litestar | `litestar` | Stable | Decorator and route_handlers conversion |
+| Starlette | `starlette` | Stable | Route/Mount conversion |
 
 ## What You Get
 
 - Multi-framework adapter architecture.
-- Deterministic conversion outputs.
+- Deterministic conversion output.
 - Rule-level diagnostics and reports.
 - Dry-run and unified diff previews.
 - Verification checks after conversion.
@@ -68,25 +73,25 @@ pip install lilya-converter
 
 ## Conversion Preview
 
-### FastAPI input:
+### FastAPI input
 
 ```python
 {!> ../../../docs_src/conversion/fastapi_input.py !}
 ```
 
-### Lilya output:
+### Lilya output
 
 ```python
 {!> ../../../docs_src/conversion/lilya_output.py !}
 ```
 
-### Flask input:
+### Flask input
 
 ```python
 {!> ../../../docs_src/conversion/flask_input.py !}
 ```
 
-### Flask Lilya output:
+### Flask Lilya output
 
 ```python
 {!> ../../../docs_src/conversion/flask_output.py !}

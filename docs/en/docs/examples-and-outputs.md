@@ -30,6 +30,48 @@ Converted Lilya output:
 {!> ../../../docs_src/conversion/flask_output.py !}
 ```
 
+## Django URLConf Example
+
+Django input:
+
+```python
+{!> ../../../docs_src/conversion/django_input_urls.py !}
+```
+
+Converted Lilya output:
+
+```python
+{!> ../../../docs_src/conversion/django_output_urls.py !}
+```
+
+## Litestar Example
+
+Litestar input:
+
+```python
+{!> ../../../docs_src/conversion/litestar_input.py !}
+```
+
+Converted Lilya output:
+
+```python
+{!> ../../../docs_src/conversion/litestar_output.py !}
+```
+
+## Starlette Example
+
+Starlette input:
+
+```python
+{!> ../../../docs_src/conversion/starlette_input.py !}
+```
+
+Converted Lilya output:
+
+```python
+{!> ../../../docs_src/conversion/starlette_output.py !}
+```
+
 ## Example Analyze Output
 
 ```text

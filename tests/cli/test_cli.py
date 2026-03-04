@@ -95,6 +95,57 @@ def test_convert_command_accepts_flask_source(tmp_path: Path) -> None:
     assert (target / "main.py").exists()
 
 
+def test_convert_command_accepts_django_source(tmp_path: Path) -> None:
+    """Ensure convert command accepts explicit Django source selection."""
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    source.mkdir(parents=True)
+    (source / "urls.py").write_text(
+        "from django.urls import path\nurlpatterns = [path('', view)]\n",
+        encoding="utf-8",
+    )
+
+    client = SayerTestClient(app)
+    result = client.invoke(["convert", str(source), str(target), "--source", "django"])
+
+    assert result.exit_code == 0
+    assert "Source framework: django" in result.output
+
+
+def test_convert_command_accepts_litestar_source(tmp_path: Path) -> None:
+    """Ensure convert command accepts explicit Litestar source selection."""
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    source.mkdir(parents=True)
+    (source / "main.py").write_text(
+        "from litestar import Litestar\napp = Litestar(route_handlers=[])\n",
+        encoding="utf-8",
+    )
+
+    client = SayerTestClient(app)
+    result = client.invoke(["convert", str(source), str(target), "--source", "litestar"])
+
+    assert result.exit_code == 0
+    assert "Source framework: litestar" in result.output
+
+
+def test_convert_command_accepts_starlette_source(tmp_path: Path) -> None:
+    """Ensure convert command accepts explicit Starlette source selection."""
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    source.mkdir(parents=True)
+    (source / "main.py").write_text(
+        "from starlette.applications import Starlette\napp = Starlette(routes=[])\n",
+        encoding="utf-8",
+    )
+
+    client = SayerTestClient(app)
+    result = client.invoke(["convert", str(source), str(target), "--source", "starlette"])
+
+    assert result.exit_code == 0
+    assert "Source framework: starlette" in result.output
+
+
 def test_convert_command_rejects_invalid_source(tmp_path: Path) -> None:
     source = tmp_path / "source"
     target = tmp_path / "target"
@@ -115,6 +166,11 @@ def test_convert_help_lists_supported_sources_sorted() -> None:
     assert result.exit_code == 0
     rendered = result.output.lower()
     assert "supported:" in rendered
-    assert "fastapi" in rendered
-    assert "flask" in rendered
-    assert rendered.index("fastapi") < rendered.index("flask")
+    supported_index = rendered.rindex("supported:")
+    source_section = rendered[supported_index:]
+    django_index = source_section.index("django")
+    fastapi_index = source_section.index("fastapi")
+    flask_index = source_section.index("flask")
+    litestar_index = source_section.index("litestar")
+    starlette_index = source_section.index("starlette")
+    assert django_index < fastapi_index < flask_index < litestar_index < starlette_index

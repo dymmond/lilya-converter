@@ -32,6 +32,10 @@ Match the protocol in `lilya_converter/core/protocols.py`:
 - `scaffold(source_root, target_root, dry_run=False)`
 - `collect_verify_diagnostics(relative_path, source)`
 
+Optional adapter extension points:
+
+- `target_relative_path(relative_path)` for framework-specific output path remapping (for example, Django `management/commands/*` to Lilya `directives/operations/*`).
+
 ## 3. Register adapter explicitly
 
 Update `lilya_converter/adapters/__init__.py` and add your adapter to `create_default_adapters()`.
@@ -60,6 +64,8 @@ Recommended fixture layout:
 
 - `tests/fixtures/<source>/<scenario>/...`
 - `tests/fixtures/golden_<source>/<scenario>/...`
+
+If your adapter remaps output paths, add at least one fixture and assertion that validates the remapped target location.
 
 ## 6. Conventions
 

@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <em>Convert FastAPI and Flask codebases into Lilya using deterministic rules, explicit diagnostics, and reproducible reports.</em>
+    <em>Convert web framework codebases into Lilya with deterministic rules, explicit diagnostics, and reproducible reports.</em>
 </p>
 
 <p align="center">
@@ -32,18 +32,23 @@
 
 `lilya_converter` is a modular CLI for converting source framework projects into Lilya.
 
-Supported sources:
+## Supported Sources
 
-- `fastapi` (default; backwards compatible)
-- `flask`
+| Source | Key | Notes |
+| --- | --- | --- |
+| FastAPI | `fastapi` | Default source, backwards-compatible behavior |
+| Flask | `flask` | Blueprint and route conversion |
+| Django | `django` | URLConf conversion + management command path remap |
+| Litestar | `litestar` | Decorator/route_handlers conversion |
+| Starlette | `starlette` | Route/Mount conversion |
 
-Architecture:
+## Architecture
 
 - framework-agnostic core orchestration,
 - explicit adapter registry,
 - framework-specific adapters,
 - shared filesystem utilities,
-- deterministic report/diagnostic models.
+- deterministic report and diagnostic models.
 
 ## Installation
 
@@ -65,34 +70,35 @@ lilya-converter --help
 
 ## Usage
 
-### FastAPI (default source)
+FastAPI remains the default source:
 
 ```bash
 lilya-converter analyze ./my-fastapi-app
 lilya-converter convert ./my-fastapi-app ./my-lilya-app --dry-run --diff
-lilya-converter convert ./my-fastapi-app ./my-lilya-app --report ./reports/convert.json
-lilya-converter verify ./my-lilya-app --report ./reports/verify.json
 ```
 
-### Flask
+Select another framework explicitly:
 
 ```bash
-lilya-converter analyze ./my-flask-app --source flask
-lilya-converter convert ./my-flask-app ./my-lilya-app --source flask --dry-run --diff
-lilya-converter convert ./my-flask-app ./my-lilya-app --source flask --report ./reports/convert.json
-lilya-converter verify ./my-lilya-app --source flask --report ./reports/verify.json
+lilya-converter analyze ./my-django-app --source django
+lilya-converter convert ./my-flask-app ./my-lilya-app --source flask
+lilya-converter convert ./my-litestar-app ./my-lilya-app --source litestar
+lilya-converter convert ./my-starlette-app ./my-lilya-app --source starlette
+lilya-converter verify ./my-lilya-app --source django --report ./reports/verify.json
 ```
 
 ## Commands
 
 ```bash
-lilya-converter analyze SOURCE [--source fastapi|flask] [--json] [--output REPORT.json]
-lilya-converter convert SOURCE TARGET [--source fastapi|flask] [--dry-run] [--diff] [--report REPORT.json]
-lilya-converter scaffold SOURCE TARGET [--source fastapi|flask] [--dry-run]
-lilya-converter map rules [--source fastapi|flask]
+lilya-converter analyze SOURCE [--source SOURCE_KEY] [--json] [--output REPORT.json]
+lilya-converter convert SOURCE TARGET [--source SOURCE_KEY] [--dry-run] [--diff] [--report REPORT.json]
+lilya-converter scaffold SOURCE TARGET [--source SOURCE_KEY] [--dry-run]
+lilya-converter map rules [--source SOURCE_KEY]
 lilya-converter map applied REPORT.json
-lilya-converter verify TARGET [--source fastapi|flask] [--report REPORT.json]
+lilya-converter verify TARGET [--source SOURCE_KEY] [--report REPORT.json]
 ```
+
+Run `lilya-converter convert --help` to see supported source keys in deterministic order.
 
 ## Adapter Extension Guide
 
@@ -101,7 +107,7 @@ See [Adding a New Adapter](docs/en/docs/adding-adapter.md) for:
 - adapter package skeleton,
 - explicit registry registration,
 - test expectations,
-- typing/docstring/error-handling conventions.
+- typing, docstring, and error-handling conventions.
 
 ## Testing
 

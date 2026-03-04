@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+from typing import Protocol, runtime_checkable
 
 from lilya_converter.core.errors import ConversionPathError
 from lilya_converter.core.plans import (
@@ -19,6 +20,21 @@ from lilya_converter.core.plans import (
 from lilya_converter.core.registry import AdapterRegistry
 from lilya_converter.models import ConversionReport, Diagnostic, FileChange, VerifyReport
 from lilya_converter.utils.filesystem import copy_file, iter_files, safe_write
+
+
+@runtime_checkable
+class _TargetPathMapper(Protocol):
+    """Protocol for adapters that remap source-relative target paths."""
+
+    def target_relative_path(self, relative_path: str) -> str:
+        """Map source-relative path to target-relative output path.
+
+        Args:
+            relative_path: Source-relative file path.
+
+        Returns:
+            Target-relative file path.
+        """
 
 
 class ConversionOrchestrator:
@@ -125,7 +141,8 @@ class ConversionOrchestrator:
 
         for file_path in iter_files(source):
             relative = file_path.relative_to(source)
-            target_path = target / relative
+            target_relative = _target_relative_path(adapter, str(relative))
+            target_path = target / target_relative
             files_total += 1
 
             if file_path.suffix == ".py":
@@ -139,7 +156,7 @@ class ConversionOrchestrator:
                     files_written += 1
                 file_changes.append(
                     FileChange(
-                        relative_path=str(relative),
+                        relative_path=target_relative,
                         original_path=str(file_path),
                         target_path=str(target_path),
                         changed=result.changed,
@@ -154,7 +171,7 @@ class ConversionOrchestrator:
                     files_written += 1
                 file_changes.append(
                     FileChange(
-                        relative_path=str(relative),
+                        relative_path=target_relative,
                         original_path=str(file_path),
                         target_path=str(target_path),
                         changed=True,
@@ -164,7 +181,7 @@ class ConversionOrchestrator:
             else:
                 file_changes.append(
                     FileChange(
-                        relative_path=str(relative),
+                        relative_path=target_relative,
                         original_path=str(file_path),
                         target_path=str(target_path),
                         changed=False,
@@ -365,3 +382,18 @@ def _collect_local_roots(target: Path) -> set[str]:
             continue
         roots.add(relative.parts[0] if len(relative.parts) > 1 else relative.stem)
     return roots
+
+
+def _target_relative_path(adapter: object, relative_path: str) -> str:
+    """Resolve adapter-specific target path remapping when available.
+
+    Args:
+        adapter: Source adapter instance.
+        relative_path: Source-relative path.
+
+    Returns:
+        Target-relative output path.
+    """
+    if isinstance(adapter, _TargetPathMapper):
+        return adapter.target_relative_path(relative_path)
+    return relative_path

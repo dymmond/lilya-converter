@@ -1,90 +1,92 @@
 # Conversion Rules
 
-This converter applies only source-grounded mappings found in local FastAPI/Lilya/Sayer repositories.
+The converter applies deterministic, source-grounded mappings from each source framework to Lilya.
 
-## Rule Categories
+## Rule Model
 
-## Import and Constructor Rules
+- Rules are adapter-specific and explicitly registered.
+- Each rule has a stable ID (`map rules`).
+- Applied rules are reported per conversion (`map applied`).
+- Unsupported or partial mappings emit diagnostics with file and line context.
 
-- FastAPI app/router imports map to Lilya app/router imports.
-- Response/middleware import modules are mapped only when Lilya has direct equivalents.
+## FastAPI Rules
+
+### Imports and constructors
+
+- FastAPI app/router imports map to Lilya imports.
+- Response and middleware imports map only when Lilya has direct equivalents.
 - Unsupported constructor kwargs are removed and reported.
 
-## Routing Rules
+### Routing and dependencies
 
-- `include_router(...)` becomes `include(path=..., app=...)`.
-- `api_route(...)` becomes `route(..., methods=[...])`.
-- `trace(...)` becomes `route(..., methods=["TRACE"])`.
-- Router `prefix=` is extracted and merged into route paths where deterministic.
+- `include_router(...)` -> `include(path=..., app=...)`.
+- `api_route(...)` and `trace(...)` normalize to Lilya route methods.
+- Router `prefix=` is merged into route paths where deterministic.
+- `Depends(...)` and `Annotated[..., Depends(...)]` are normalized to Lilya dependency maps.
 
-## Dependency Rules
+### Middleware and handlers
 
-- Signature defaults `Depends(dep)` become `Provide(dep)` route dependencies + `Provides()` defaults.
-- `Annotated[..., Depends(dep)]` metadata is normalized to Lilya dependency maps.
-- Decorator/constructor dependency lists are converted to dependency dictionaries.
+- FastAPI exception-handler decorators become `add_exception_handler(...)` calls.
+- Unsupported decorator middleware patterns are removed with diagnostics.
 
-## Error and Middleware Rules
+## Flask Rules
 
-- `@app.exception_handler(ExceptionType)` becomes `app.add_exception_handler(ExceptionType, handler)`.
-- FastAPI function middleware decorators are removed with explicit diagnostics.
-- Class middleware imports/calls are preserved where direct Lilya mapping exists.
+- Flask/Blueprint imports map to Lilya app/router imports.
+- Blueprint `url_prefix` is merged into route decorators where deterministic.
+- `register_blueprint(...)` -> `include(path=..., app=...)` with non-empty path normalization.
+- Unsupported route and constructor kwargs are removed with diagnostics.
 
-## Complex Conversion Behaviors
+## Django Rules
 
-## Router Prefix Handling
+- `django.urls.path(...)` and `re_path(...)` -> Lilya `Path(...)`.
+- `django.urls.include(...)` -> Lilya `Include(path=..., app=...)`.
+- `urlpatterns` modules are materialized as `app = Lilya(routes=urlpatterns)`.
+- Converter syntax (`<int:id>`) is normalized to Lilya syntax (`{id:int}`).
+- Project path mapping:
+  - `management/commands/*` -> `directives/operations/*`.
 
-FastAPI commonly combines router prefixes and include prefixes.
+## Litestar Rules
 
-Converter behavior:
-- route paths receive extracted router prefixes,
-- include paths preserve explicit include prefixes,
-- dynamic combinations that cannot be resolved deterministically are reported.
+- Litestar imports map to Lilya app/routing imports.
+- Module-level HTTP decorators (`@get`, `@post`, etc.) are converted to explicit `Path(...)` routes.
+- `route_handlers` in `Litestar(...)` and `Router(...)` are normalized to Lilya `routes`.
+- `Router(path=...)` is materialized via `Include(path=..., app=router)` at app level.
 
-## Dependency Layering
+## Starlette Rules
 
-Dependencies can exist simultaneously at:
-- app/router constructors,
-- include-router call sites,
-- route decorators,
-- route handler signatures.
+- Starlette imports map to Lilya import aliases:
+  - `Starlette` -> `Lilya`,
+  - `Route` -> `Path`,
+  - `Mount` -> `Include`,
+  - `WebSocketRoute` -> `WebSocketPath`.
+- `Route(...)`, `Mount(...)`, and `WebSocketRoute(...)` call signatures are normalized.
+- `mount(...)` calls normalize to Lilya include semantics.
+- `add_route(route=...)` calls normalize to `add_route(handler=...)`.
 
-Converter behavior:
-- merges dependency layers into Lilya route/include-compatible dependency dictionaries,
-- generates deterministic synthetic names where needed,
-- reports unsupported shapes.
+## Path Normalization
 
-## Response Metadata Gaps
+For frameworks with route/include path values, converter output enforces Lilya path expectations:
 
-FastAPI metadata like `response_model` does not map 1:1 to Lilya route decorator arguments.
+- path values are never empty,
+- path values are normalized to start with `/` where deterministically possible.
 
-Converter behavior:
-- removes unsupported kwargs,
-- preserves executable handler code,
-- emits diagnostics for manual review.
+## Worked Examples
 
-## Worked Dependency Example
-
-FastAPI:
+### FastAPI dependencies
 
 ```python
 {!> ../../../docs_src/conversion/dependencies_fastapi.py !}
 ```
 
-Lilya:
-
 ```python
 {!> ../../../docs_src/conversion/dependencies_lilya.py !}
 ```
 
-## Worked Complex Example
-
-FastAPI:
+### FastAPI complex conversion
 
 ```python
 {!> ../../../docs_src/conversion/complex_fastapi.py !}
 ```
-
-Lilya:
 
 ```python
 {!> ../../../docs_src/conversion/complex_lilya.py !}
@@ -92,6 +94,6 @@ Lilya:
 
 ## Operational Guidance
 
-- Use `map rules` before conversion to inspect available mappings.
-- Use `map applied` after conversion to audit which rules were triggered.
-- Treat diagnostics as required migration checklist items.
+- Run `map rules --source SOURCE_KEY` before conversion.
+- Run `map applied REPORT.json` after conversion to audit triggered rules.
+- Treat diagnostics as migration checklist items.

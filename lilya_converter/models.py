@@ -103,13 +103,23 @@ class AppInstanceInfo:
 
     Attributes:
         name: Assigned symbol name.
-        kind: Constructor type (`FastAPI`, `APIRouter`, `Flask`, or `Blueprint`).
+        kind: Constructor type (`FastAPI`, `APIRouter`, `Flask`, `Blueprint`,
+            `DjangoURLConf`, `Litestar`, `Starlette`, or `Router`).
         line: 1-based assignment line.
         prefix_expr: Optional `prefix=` expression if present.
     """
 
     name: str
-    kind: Literal["FastAPI", "APIRouter", "Flask", "Blueprint"]
+    kind: Literal[
+        "FastAPI",
+        "APIRouter",
+        "Flask",
+        "Blueprint",
+        "DjangoURLConf",
+        "Litestar",
+        "Starlette",
+        "Router",
+    ]
     line: int
     prefix_expr: str | None = None
 

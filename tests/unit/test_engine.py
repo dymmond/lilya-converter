@@ -94,6 +94,53 @@ def test_verify_project_reports_flask_remaining_patterns(tmp_path: Path) -> None
     assert "verify.register_blueprint_remaining" in codes
 
 
+def test_verify_project_reports_django_remaining_patterns(tmp_path: Path) -> None:
+    """Ensure Django verify diagnostics detect residual source patterns."""
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "urls.py").write_text(
+        "from django.urls import path\nurlpatterns = [path('', view)]\n",
+        encoding="utf-8",
+    )
+
+    report = verify_project(target, source_framework="django")
+
+    codes = {item.code for item in report.diagnostics}
+    assert "verify.django_import_remaining" in codes
+    assert "verify.urlpatterns_remaining" in codes
+
+
+def test_verify_project_reports_litestar_remaining_patterns(tmp_path: Path) -> None:
+    """Ensure Litestar verify diagnostics detect residual source patterns."""
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "main.py").write_text(
+        "from litestar import Litestar\napp = Litestar(route_handlers=[])\n",
+        encoding="utf-8",
+    )
+
+    report = verify_project(target, source_framework="litestar")
+
+    codes = {item.code for item in report.diagnostics}
+    assert "verify.litestar_import_remaining" in codes
+
+
+def test_verify_project_reports_starlette_remaining_patterns(tmp_path: Path) -> None:
+    """Ensure Starlette verify diagnostics detect residual source patterns."""
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "main.py").write_text(
+        "from starlette.applications import Starlette\napp = Starlette(routes=[])\napp.mount('/', app=sub)\n",
+        encoding="utf-8",
+    )
+
+    report = verify_project(target, source_framework="starlette")
+
+    codes = {item.code for item in report.diagnostics}
+    assert "verify.starlette_import_remaining" in codes
+    assert "verify.mount_remaining" in codes
+
+
 def test_verify_project_reports_parse_errors(tmp_path: Path) -> None:
     target = tmp_path / "target"
     target.mkdir()
@@ -164,3 +211,19 @@ def test_convert_report_is_deterministically_sorted(tmp_path: Path) -> None:
     assert first_paths == ["a.py", "b.txt", "z.py"]
     assert first_paths == second_paths
     assert first.applied_rules == second.applied_rules
+
+
+def test_django_management_command_paths_are_mapped(tmp_path: Path) -> None:
+    """Map Django management command paths into Lilya directives operations."""
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    command_file = source / "app" / "management" / "commands" / "refresh.py"
+    command_file.parent.mkdir(parents=True)
+    command_file.write_text("value = 1\n", encoding="utf-8")
+
+    report = convert_project(source, target, source_framework="django", dry_run=False)
+
+    mapped_file = target / "app" / "directives" / "operations" / "refresh.py"
+    assert mapped_file.exists()
+    assert mapped_file.read_text(encoding="utf-8") == "value = 1\n"
+    assert any(change.relative_path == "app/directives/operations/refresh.py" for change in report.file_changes)
