@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import click
 from sayer import Argument, Option, Sayer
@@ -88,9 +88,9 @@ def analyze(
         Option("fastapi", "--source", type=SOURCE_CHOICE, help=SOURCE_HELP),
     ] = "fastapi",
     output: Annotated[
-        Optional[str],
-        Option(None, "--output", "-o", type=str, help="Optional JSON report path."),
-    ] = None,
+        str,
+        Option("", "--output", "-o", type=str, help="Optional JSON report path."),
+    ] = "",
     as_json: Annotated[
         bool,
         Option(False, "--json", help="Print full JSON report to stdout.", is_flag=True),
@@ -145,9 +145,9 @@ def convert(
         Option("fastapi", "--source", type=SOURCE_CHOICE, help=SOURCE_HELP),
     ] = "fastapi",
     report: Annotated[
-        Optional[str],
-        Option(None, "--report", type=str, help="Optional JSON report output path."),
-    ] = None,
+        str,
+        Option("", "--report", type=str, help="Optional JSON report output path."),
+    ] = "",
     dry_run: Annotated[
         bool,
         Option(False, "--dry-run", help="Compute changes without writing files.", is_flag=True),
@@ -334,9 +334,9 @@ def verify(
         Option("fastapi", "--source", type=SOURCE_CHOICE, help=SOURCE_HELP),
     ] = "fastapi",
     report: Annotated[
-        Optional[str],
-        Option(None, "--report", type=str, help="Optional JSON report output path."),
-    ] = None,
+        str,
+        Option("", "--report", type=str, help="Optional JSON report output path."),
+    ] = "",
 ) -> None:
     """Verify structural correctness of a converted Lilya project.
 
