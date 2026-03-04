@@ -39,7 +39,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = ["sayer", "fastapi[standard]", "lilya[standard]"]
+dependencies = ["sayer", "lilya[standard]"]
 keywords = ["lilya_converter"]
 
 [project.urls]
@@ -51,7 +51,6 @@ Source = "https://github.com/dymmond/lilya-converter"
 
 [project.scripts]
 lilya-converter = "lilya_converter.__main__:run"
-
 
 [tool.hatch.version]
 path = "lilya_converter/__init__.py"
@@ -75,6 +74,14 @@ testing = [
     "pytest>=7.2.2,<9.0.0",
     "pytest-cov>=4.0.0,<5.0.0",
     "zensical>=0.0.23,<0.1.0",
+]
+
+fastapi = [
+  "fastapi[standard]>=0.135.0",
+]
+
+flask = [
+  "flask>=3.1.3"
 ]
 
 [tool.hatch.envs.default.scripts]
