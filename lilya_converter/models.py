@@ -82,12 +82,12 @@ class RouteInfo:
 
 @dataclass
 class IncludeRouterInfo:
-    """Represents one `include_router(...)` call discovered during scan.
+    """Represents one include call discovered during source scan.
 
     Attributes:
         owner: Owning symbol receiving the include call.
-        router_expr: String form of router expression.
-        prefix_expr: Optional string form of include prefix.
+        router_expr: String form of included app/router expression.
+        prefix_expr: Optional string form of include prefix/path expression.
         line: 1-based line number for the call.
     """
 
@@ -99,17 +99,17 @@ class IncludeRouterInfo:
 
 @dataclass
 class AppInstanceInfo:
-    """Metadata for a discovered FastAPI/APIRouter constructor assignment.
+    """Metadata for a discovered source framework constructor assignment.
 
     Attributes:
         name: Assigned symbol name.
-        kind: Constructor type (`FastAPI` or `APIRouter`).
+        kind: Constructor type (`FastAPI`, `APIRouter`, `Flask`, or `Blueprint`).
         line: 1-based assignment line.
         prefix_expr: Optional `prefix=` expression if present.
     """
 
     name: str
-    kind: Literal["FastAPI", "APIRouter"]
+    kind: Literal["FastAPI", "APIRouter", "Flask", "Blueprint"]
     line: int
     prefix_expr: str | None = None
 

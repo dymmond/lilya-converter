@@ -2,24 +2,26 @@
 
 This is the full CLI reference with examples from basic to advanced.
 
+Supported sources are listed in command help and resolved deterministically: `fastapi`, `flask`.
+
 ## `analyze`
 
-Analyze a FastAPI source root and report conversion-relevant structure.
+Analyze a source root and report conversion-relevant structure.
 
 ```bash
-lilya-converter analyze SOURCE [--output REPORT.json] [--json]
+lilya-converter analyze SOURCE [--source fastapi|flask] [--output REPORT.json] [--json]
 ```
 
-### Basic
+### Basic (FastAPI default)
 
 ```bash
 lilya-converter analyze ./fastapi_project
 ```
 
-### Intermediate
+### Flask
 
 ```bash
-lilya-converter analyze ./fastapi_project --output ./reports/scan.json
+lilya-converter analyze ./flask_project --source flask
 ```
 
 ### Advanced
@@ -32,20 +34,27 @@ Use this when you want machine-readable output in CI pipelines.
 
 ## `convert`
 
-Convert a FastAPI source root into a Lilya target root.
+Convert a source root into a Lilya target root.
 
 ```bash
 lilya-converter convert SOURCE TARGET \
+  [--source fastapi|flask] \
   [--dry-run] \
   [--diff] \
   [--copy-non-python/--no-copy-non-python] \
   [--report REPORT.json]
 ```
 
-### Basic
+### Basic (FastAPI default)
 
 ```bash
 lilya-converter convert ./fastapi_project ./lilya_project
+```
+
+### Flask
+
+```bash
+lilya-converter convert ./flask_project ./lilya_project --source flask
 ```
 
 ### Intermediate (recommended preview)
@@ -75,7 +84,7 @@ lilya-converter convert ./tmp-single-source ./tmp-single-target --report ./repor
 Generate a minimal Lilya scaffold informed by source analysis.
 
 ```bash
-lilya-converter scaffold SOURCE TARGET [--dry-run]
+lilya-converter scaffold SOURCE TARGET [--source fastapi|flask] [--dry-run]
 ```
 
 ### Basic
@@ -84,18 +93,18 @@ lilya-converter scaffold SOURCE TARGET [--dry-run]
 lilya-converter scaffold ./fastapi_project ./lilya_scaffold
 ```
 
-### Advanced
+### Flask
 
 ```bash
-lilya-converter scaffold ./fastapi_project ./lilya_scaffold --dry-run
+lilya-converter scaffold ./flask_project ./lilya_scaffold --source flask
 ```
 
 ## `map rules`
 
-List all known conversion rules.
+List all known conversion rules for one source framework.
 
 ```bash
-lilya-converter map rules
+lilya-converter map rules [--source fastapi|flask]
 ```
 
 ## `map applied`
@@ -111,7 +120,7 @@ lilya-converter map applied ./reports/convert.json
 Run structural checks on converted output.
 
 ```bash
-lilya-converter verify TARGET [--report REPORT.json]
+lilya-converter verify TARGET [--source fastapi|flask] [--report REPORT.json]
 ```
 
 ### Basic
@@ -120,16 +129,16 @@ lilya-converter verify TARGET [--report REPORT.json]
 lilya-converter verify ./lilya_project
 ```
 
-### Intermediate
+### Flask
 
 ```bash
-lilya-converter verify ./lilya_project --report ./reports/verify.json
+lilya-converter verify ./lilya_project --source flask
 ```
 
 ### What it checks
 
 - Python syntax validation.
-- Remaining FastAPI import/call patterns.
+- Remaining source-framework import/call patterns.
 - Unresolved local imports.
 
 ## Suggested production routine

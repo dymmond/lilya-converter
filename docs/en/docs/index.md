@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <em>Convert FastAPI codebases into Lilya using deterministic rules, explicit diagnostics, and reproducible reports.</em>
+    <em>Convert FastAPI and Flask codebases into Lilya with deterministic rules, explicit diagnostics, and reproducible reports.</em>
 </p>
 
 <p align="center">
@@ -44,9 +44,16 @@ pip install lilya-converter
 2. [First Conversion](tutorial-first-conversion.md)
 3. [Guides](how-to-convert-project.md)
 4. [Command Reference](commands.md)
+5. [Adding a New Adapter](adding-adapter.md)
+
+## Framework Support
+
+- `fastapi` (default source; backwards-compatible CLI behavior)
+- `flask` (`--source flask`)
 
 ## What You Get
 
+- Multi-framework adapter architecture.
 - Deterministic conversion outputs.
 - Rule-level diagnostics and reports.
 - Dry-run and unified diff previews.

@@ -1,5 +1,37 @@
 # Release Notes
 
+## 0.2.0
+
+`lilya-converter` now supports a multi-framework adapter architecture.
+
+### What's Included
+
+- Framework-agnostic core orchestration (`core` package).
+- Explicit deterministic adapter registry (`fastapi`, `flask`).
+- New Flask-to-Lilya adapter (`--source flask`).
+- FastAPI conversion moved into a dedicated adapter with compatibility shims.
+- Unified typed exception model for adapter/registry/path errors.
+- Typed conversion plan/result objects in orchestration.
+- CLI source selection support with stable help output for supported sources.
+- New Flask tests:
+  - registry selection,
+  - CLI parsing,
+  - end-to-end fixture-to-golden conversion.
+
+### Compatibility
+
+- Existing FastAPI CLI behavior remains backwards compatible.
+- Omitting `--source` still defaults to `fastapi`.
+
+### Quick Start
+
+```bash
+lilya-converter analyze ./my-fastapi-app
+lilya-converter convert ./my-fastapi-app ./my-lilya-app
+lilya-converter convert ./my-flask-app ./my-lilya-app --source flask
+lilya-converter verify ./my-lilya-app --source flask
+```
+
 ## 0.1.0
 
 `lilya-converter` is now available as a brand-new CLI to help migrate FastAPI codebases to Lilya with deterministic, report-driven workflows.

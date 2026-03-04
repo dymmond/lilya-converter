@@ -76,3 +76,45 @@ def test_verify_command_returns_error_on_parse_failure(tmp_path: Path) -> None:
 
     assert result.exit_code != 0
     assert "Verification failed" in result.output
+
+
+def test_convert_command_accepts_flask_source(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    source.mkdir()
+    (source / "main.py").write_text(
+        "from flask import Flask\napp = Flask(__name__)\n",
+        encoding="utf-8",
+    )
+
+    client = SayerTestClient(app)
+    result = client.invoke(["convert", str(source), str(target), "--source", "flask"])
+
+    assert result.exit_code == 0
+    assert "Source framework: flask" in result.output
+    assert (target / "main.py").exists()
+
+
+def test_convert_command_rejects_invalid_source(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    source.mkdir()
+    (source / "main.py").write_text("from fastapi import FastAPI\napp = FastAPI()\n", encoding="utf-8")
+
+    client = SayerTestClient(app)
+    result = client.invoke(["convert", str(source), str(target), "--source", "invalid"])
+
+    assert result.exit_code != 0
+    assert "invalid value for '--source'" in result.output.lower()
+
+
+def test_convert_help_lists_supported_sources_sorted() -> None:
+    client = SayerTestClient(app)
+    result = client.invoke(["convert", "--help"])
+
+    assert result.exit_code == 0
+    rendered = result.output.lower()
+    assert "supported:" in rendered
+    assert "fastapi" in rendered
+    assert "flask" in rendered
+    assert rendered.index("fastapi") < rendered.index("flask")
