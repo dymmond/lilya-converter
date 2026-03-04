@@ -148,3 +148,5 @@ lilya-converter verify ./lilya_project --source flask
 3. `convert`
 4. `verify`
 5. `map applied`
+
+For full command output and report payload examples, see [Examples and Outputs](examples-and-outputs.md).

@@ -43,8 +43,9 @@ pip install lilya-converter
 1. [Get Started](get-started.md)
 2. [First Conversion](tutorial-first-conversion.md)
 3. [Guides](how-to-convert-project.md)
-4. [Command Reference](commands.md)
-5. [Adding a New Adapter](adding-adapter.md)
+4. [Examples and Outputs](examples-and-outputs.md)
+5. [Command Reference](commands.md)
+6. [Adding a New Adapter](adding-adapter.md)
 
 ## Framework Support
 
@@ -77,4 +78,16 @@ pip install lilya-converter
 
 ```python
 {!> ../../../docs_src/conversion/lilya_output.py !}
+```
+
+### Flask input:
+
+```python
+{!> ../../../docs_src/conversion/flask_input.py !}
+```
+
+### Flask Lilya output:
+
+```python
+{!> ../../../docs_src/conversion/flask_output.py !}
 ```

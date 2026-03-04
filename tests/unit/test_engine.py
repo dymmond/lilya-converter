@@ -79,6 +79,21 @@ def test_verify_project_reports_common_remaining_patterns(tmp_path: Path) -> Non
     assert "verify.middleware_decorator_remaining" in codes
 
 
+def test_verify_project_reports_flask_remaining_patterns(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "main.py").write_text(
+        "from flask import Flask\napp = Flask(__name__)\napp.register_blueprint(router)\n",
+        encoding="utf-8",
+    )
+
+    report = verify_project(target, source_framework="flask")
+
+    codes = {item.code for item in report.diagnostics}
+    assert "verify.flask_import_remaining" in codes
+    assert "verify.register_blueprint_remaining" in codes
+
+
 def test_verify_project_reports_parse_errors(tmp_path: Path) -> None:
     target = tmp_path / "target"
     target.mkdir()

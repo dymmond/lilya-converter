@@ -1,0 +1,11 @@
+{
+  "target_root": "/workspace/lilya_project",
+  "diagnostics": [
+    {
+      "code": "verify.flask_import_remaining",
+      "severity": "warning",
+      "message": "Flask imports are still present after conversion.",
+      "file": "app/legacy.py"
+    }
+  ]
+}

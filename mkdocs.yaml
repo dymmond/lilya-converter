@@ -43,6 +43,7 @@ nav:
   - Guides:
       - Convert an Entire Project: how-to-convert-project.md
       - Convert a Single File: how-to-convert-single-file.md
+      - Examples and Outputs: examples-and-outputs.md
       - Analyze and Reports: how-to-analyze-and-reports.md
       - Verify and Fix Issues: how-to-verify-and-fix.md
       - Adding a New Adapter: adding-adapter.md

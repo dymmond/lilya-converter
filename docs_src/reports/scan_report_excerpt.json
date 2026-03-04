@@ -1,0 +1,25 @@
+{
+  "source_root": "/workspace/flask_project",
+  "modules": [
+    {
+      "relative_path": "app/main.py",
+      "app_instances": [
+        {"name": "app", "kind": "Flask", "line": 3, "prefix_expr": null},
+        {"name": "api", "kind": "Blueprint", "line": 4, "prefix_expr": "'/api'"}
+      ],
+      "routes": [
+        {
+          "function_name": "list_items",
+          "owner": "api",
+          "method": "route",
+          "path": "'/items'",
+          "line": 7
+        }
+      ],
+      "include_routers": [
+        {"owner": "app", "router_expr": "api", "prefix_expr": null, "line": 11}
+      ]
+    }
+  ],
+  "diagnostics": []
+}

@@ -76,3 +76,5 @@ lilya-converter verify ./lilya_project --source flask --report ./reports/verify.
 3. Run `convert` without dry-run.
 4. Run `verify` and resolve diagnostics.
 5. Commit converted output once checks pass.
+
+For concrete sample outputs (`stdout`, `scan.json`, `convert.json`, `verify.json`), see [Examples and Outputs](examples-and-outputs.md).
