@@ -38,6 +38,22 @@
 pip install lilya-converter
 ```
 
+Optional framework extras:
+
+```bash
+pip install "lilya-converter[fastapi]"
+pip install "lilya-converter[flask]"
+pip install "lilya-converter[django]"
+pip install "lilya-converter[litestar]"
+pip install "lilya-converter[starlette]"
+```
+
+Install with all framework extras:
+
+```bash
+pip install "lilya-converter[fastapi,flask,django,litestar,starlette]"
+```
+
 ## Start Here
 
 1. [Get Started](get-started.md)

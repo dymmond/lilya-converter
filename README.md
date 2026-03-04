@@ -56,6 +56,22 @@
 pip install lilya-converter
 ```
 
+Optional framework extras (useful when you also want local framework packages installed):
+
+```bash
+pip install "lilya-converter[fastapi]"
+pip install "lilya-converter[flask]"
+pip install "lilya-converter[django]"
+pip install "lilya-converter[litestar]"
+pip install "lilya-converter[starlette]"
+```
+
+Install with all supported framework extras:
+
+```bash
+pip install "lilya-converter[fastapi,flask,django,litestar,starlette]"
+```
+
 For local development:
 
 ```bash
