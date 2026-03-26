@@ -57,7 +57,7 @@ path = "lilya_converter/__init__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
-    "ty",
+    "ty==0.0.22",
     "ruff>=0.3.0,<5.0.0",
     "pre-commit>=3.3.1,<4.0.0",
     "devtools>=0.12.2",
